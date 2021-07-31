@@ -20,38 +20,46 @@ void user_redimensiona_janela_callback(GLFWwindow* window, int width, int height
 	glViewport(0, 0, width, height);
 }
 
-int main() {
+GLFWwindow* inicializarjanela(const char* nomejanela) {
 	//inicializar glfw e configurar
 	if (!glfwInit()) {
 		std::cout << "failed to initialize glfw";
-		return -1;
+		return NULL;
 	}
-
 	glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);// configuracao da janela e da versao do opengl
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
 	//criar janela
 	int winW = 1280, winH = 720;
-	GLFWwindow* janela = glfwCreateWindow(winW, winH, "Primeiro Prog OpenGL", NULL, NULL);
+	GLFWwindow* janela = glfwCreateWindow(winW, winH, nomejanela, NULL, NULL);
 	if (janela == NULL) {
 		std::cout << "falha a criar a janela, vou abortar" << std::endl;
 		glfwTerminate();
-		return -1;
+		return NULL;
 	}
 	glfwMakeContextCurrent(janela);
-
 	//inicializar glad
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
+		return NULL;
 	}
-
 	glViewport(0, 0, winW, winH);
 	glfwSetFramebufferSizeCallback(janela, user_redimensiona_janela_callback);//mudar o tamanho da janela e tamanho de onde e renderizado
 
+	return janela;
+}
+
+
+int main() {
+	
+	GLFWwindow* janela = inicializarjanela("Boas");
+	if (janela == NULL) {
+		return -1;
+	}
+
+	
 	GLuint VertexArrayID; //VAO
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
